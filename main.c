@@ -76,6 +76,7 @@ int main(int argc, char **argv) {
     }
     fwrite(&max_width, sizeof(int32_t), 1, file_atlas);
     fwrite(&max_height, sizeof(int32_t), 1, file_atlas);
+    fclose(file_config);
     fclose(file_atlas);
     return 0;
 }
