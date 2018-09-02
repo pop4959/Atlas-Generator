@@ -6,9 +6,15 @@
 #include "json-builder.h"
 #include "utils.h"
 #include "xnb.h"
+#include "offsets.h"
+#include "json.h"
 
 void generate_from_json_file(const char *file_name)
 {
+	char buffer[BUFFER_SIZE];
+	FILE *file_config = fopen("config.txt", "r");
+	int character = atoi(fgets(buffer, BUFFER_SIZE - 1, file_config));
+	fclose(file_config);
 	char *json;
 	size_t json_length = read_file_to_string(&json, file_name);
 	json_settings settings = {};
@@ -20,16 +26,16 @@ void generate_from_json_file(const char *file_name)
 		json_object_entry first_element = root->u.object.values[0];
 		if (strcmp(first_element.name, "frames") == 0)
 		{
-			generate_xnb_for_texturepacker(file_name, root);
+			generate_xnb_for_texturepacker(file_name, root, character);
 		} else if (strcmp(first_element.name, "meta") == 0)
 		{
-			generate_xnb_for_spritesheetjs(file_name, root);
+			generate_xnb_for_spritesheetjs(file_name, root, character);
 		}
 	}
 	json_value_free(root);
 }
 
-void generate_xnb_for_texturepacker(const char *file_name, json_value *root)
+void generate_xnb_for_texturepacker(const char *file_name, json_value *root, int character)
 {
 	json_object_entry frame_object = root->u.object.values[0];
 	json_value **frames = frame_object.value->u.array.values;
@@ -44,9 +50,10 @@ void generate_xnb_for_texturepacker(const char *file_name, json_value *root)
 		remove_extension(&frame_data[0].value->u.string.ptr, "png");
 		xnb_atlas_add_region(atlas, frame_data[0].value->u.string.ptr, (int32_t) frame[0].value->u.integer,
 							 (int32_t) frame[1].value->u.integer, (int32_t) frame[2].value->u.integer,
-							 (int32_t) frame[3].value->u.integer, spriteSourceSize[0].value->u.integer,
-							 spriteSourceSize[1].value->u.integer, spriteSourceSize[2].value->u.integer,
-							 spriteSourceSize[3].value->u.integer);
+							 (int32_t) frame[3].value->u.integer,
+							 spriteSourceSize[0].value->u.integer + character_offset_x(character),
+							 spriteSourceSize[1].value->u.integer + character_offset_y(character),
+							 spriteSourceSize[2].value->u.integer, spriteSourceSize[3].value->u.integer);
 	}
 	object *o = xnb_atlas_flatten_to_object(atlas);
 	xnb *atlas_xnb = xnb_init(o);
@@ -65,7 +72,7 @@ void generate_xnb_for_texturepacker(const char *file_name, json_value *root)
 	xnb_free(atlas_xnb);
 }
 
-void generate_xnb_for_spritesheetjs(const char *file_name, json_value *root)
+void generate_xnb_for_spritesheetjs(const char *file_name, json_value *root, int character)
 {
 	json_object_entry frame_object = root->u.object.values[1];
 	json_object_entry *frames = frame_object.value->u.object.values;
@@ -81,7 +88,8 @@ void generate_xnb_for_spritesheetjs(const char *file_name, json_value *root)
 		xnb_atlas_add_region(atlas, frames[i].name, (int32_t) frame[0].value->u.integer,
 							 (int32_t) frame[1].value->u.integer,
 							 (int32_t) frame[2].value->u.integer, (int32_t) frame[3].value->u.integer,
-							 spriteSourceSize[0].value->u.integer, spriteSourceSize[1].value->u.integer,
+							 spriteSourceSize[0].value->u.integer + character_offset_x(character),
+							 spriteSourceSize[1].value->u.integer + character_offset_y(character),
 							 sourceSize[0].value->u.integer, sourceSize[1].value->u.integer);
 	}
 	object *o = xnb_atlas_flatten_to_object(atlas);

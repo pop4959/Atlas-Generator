@@ -7,9 +7,9 @@
 
 void generate_from_json_file(const char *file_name);
 
-void generate_xnb_for_texturepacker(const char *file_name, json_value *root);
+void generate_xnb_for_texturepacker(const char *file_name, json_value *root, int character);
 
-void generate_xnb_for_spritesheetjs(const char *file_name, json_value *root);
+void generate_xnb_for_spritesheetjs(const char *file_name, json_value *root, int character);
 
 void generate_from_config_file();
 
