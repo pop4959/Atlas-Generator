@@ -9,12 +9,8 @@
 #include "offsets.h"
 #include "json.h"
 
-void generate_from_json_file(const char *file_name)
+void generate_from_json_file(const char *file_name, int character)
 {
-	char buffer[BUFFER_SIZE];
-	FILE *file_config = fopen("config.txt", "r");
-	int character = atoi(fgets(buffer, BUFFER_SIZE - 1, file_config));
-	fclose(file_config);
 	char *json;
 	size_t json_length = read_file_to_string(&json, file_name);
 	json_settings settings = {};

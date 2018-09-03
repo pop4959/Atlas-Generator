@@ -7,6 +7,7 @@ int main(int argc, char **argv)
 {
 	int from_config = 0;
 	int custom_path = 0;
+	int character = 34;
 	char *target_path = NULL;
 
 	int i = 0;
@@ -16,6 +17,9 @@ int main(int argc, char **argv)
 		{
 			switch (arg[1])
 			{
+				case 'c':
+					character = atoi(argv[i + 1]);
+					break;
 				case 'l':
 					from_config = 1;
 					break;
@@ -46,7 +50,7 @@ int main(int argc, char **argv)
 				strncpy(buffer, target_path, strlen(target_path));
 				strncpy(buffer + strlen(target_path), fp->d_name, strlen(fp->d_name));
 				strncpy(buffer + strlen(target_path) + strlen(fp->d_name), "\0", 1);
-				generate_from_json_file(buffer);
+				generate_from_json_file(buffer, character);
 				free(buffer);
 			}
 		}

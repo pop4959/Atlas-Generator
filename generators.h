@@ -5,7 +5,7 @@
 
 #define BUFFER_SIZE 256
 
-void generate_from_json_file(const char *file_name);
+void generate_from_json_file(const char *file_name, int character);
 
 void generate_xnb_for_texturepacker(const char *file_name, json_value *root, int character);
 
