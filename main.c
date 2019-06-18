@@ -8,7 +8,7 @@ int main(int argc, char **argv)
 	int from_config = 0;
 	int custom_path = 0;
 	int character = 34;
-	char *target_path = NULL;
+	char *target_path = "./";
 
 	int i = 0;
 	for (char *arg = *argv; arg != NULL; arg = argv[++i])
@@ -46,7 +46,7 @@ int main(int argc, char **argv)
 		{
 			if (has_extension(fp->d_name, "json"))
 			{
-				char *buffer = malloc(strlen(target_path) + strlen(fp->d_name));
+				char *buffer = malloc(strlen(target_path) + strlen(fp->d_name) + 1);
 				strncpy(buffer, target_path, strlen(target_path));
 				strncpy(buffer + strlen(target_path), fp->d_name, strlen(fp->d_name));
 				strncpy(buffer + strlen(target_path) + strlen(fp->d_name), "\0", 1);
