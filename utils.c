@@ -13,6 +13,8 @@ int has_extension(const char *file_name, const char *extension)
 
 int remove_extension(char **file_name, const char *extension)
 {
+	if (!has_extension(*file_name, extension))
+		return 0;
 	size_t file_name_len = strlen(*file_name), extension_len = strlen(extension);
 	if (file_name_len - 1 <= extension_len)
 		return 0;
